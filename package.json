@@ -1,0 +1,41 @@
+{
+  "name": "yeild-rwa",
+  "version": "1.0.0",
+  "description": "real world assets with customised yeild",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chamaraanu/yeild-rwa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chamaraanu/yeild-rwa/issues"
+  },
+  "homepage": "https://github.com/chamaraanu/yeild-rwa#readme",
+  "devDependencies": {
+    "@ethersproject/providers": "^5.7.2",
+    "@openzeppelin/contracts": "^4.8.3",
+    "@openzeppelin/contracts-upgradeable": "^4.8.3",
+    "@types/chai": "^4.3.19",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.5.2",
+    "chai": "^4.5.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.10",
+    "hardhat-gas-reporter": "^1.0.10",
+    "solidity-coverage": "^0.8.13",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@openzeppelin/hardhat-upgrades": "^3.2.1",
+    "ethers": "^6.13.2",
+    "npm": "^10.8.3",
+    "uninstall": "^0.0.0"
+  }
+}

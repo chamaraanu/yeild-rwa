@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "./scripts",
+    "./test",
+    "./typechain",
+    "./hardhat.config.ts",
+    "./node_modules/@openzeppelin/hardhat-upgrades/dist/index.d.ts"
+  ]
+}
