@@ -8,10 +8,9 @@ async function main() {
 
   const GoldfinchConfig = await ethers.getContractFactory("GoldfinchConfig");
   const goldfinchConfig = await upgrades.deployProxy(GoldfinchConfig, [owner.address]);
-
-  // await goldfinchConfig.deployed();
-
-  console.log(`GoldfinchConfig deployed to ${goldfinchConfig.address}`);
+  await goldfinchConfig.waitForDeployment();
+  
+  console.log("GoldfinchConfig deployed to ", await goldfinchConfig.getAddress());
 }
 
 // We recommend this pattern to be able to use async/await everywhere
