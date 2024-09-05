@@ -3,14 +3,56 @@ import { ethers, upgrades } from "hardhat";
 async function main() {
   const signers = await ethers.getSigners();
   const owner = signers[0];
+  const borrower = signers[1];
 
-  console.log(owner.address)
+  console.log("Owner is: ", owner.address)
 
   const GoldfinchConfig = await ethers.getContractFactory("GoldfinchConfig");
   const goldfinchConfig = await upgrades.deployProxy(GoldfinchConfig, [owner.address]);
   await goldfinchConfig.waitForDeployment();
-  
-  console.log("GoldfinchConfig deployed to ", await goldfinchConfig.getAddress());
+  const goldfinchConfigAddress = await goldfinchConfig.getAddress();
+  console.log("GoldfinchConfig deployed to ", goldfinchConfigAddress);
+
+  const MonthlyPeriodMapper = await ethers.getContractFactory("MonthlyPeriodMapper");
+  const monthlyPeriodMapper = await MonthlyPeriodMapper.deploy();
+  await monthlyPeriodMapper.waitForDeployment();
+  console.log("MonthlyPeriodMapper deployed to ", await monthlyPeriodMapper.getAddress());
+
+  const Schedule = await ethers.getContractFactory("Schedule");
+  const schedule = await Schedule.deploy(monthlyPeriodMapper.getAddress(), 12, 4, 4, 2);
+  await schedule.waitForDeployment();
+  console.log("Schedule deployed to ", await schedule.getAddress());
+
+  const ConfigHelper = await ethers.getContractFactory("ConfigHelper");
+  const configHelper = await ConfigHelper.deploy()
+  await configHelper.waitForDeployment();
+  console.log("ConfigHelper deployed to ", await configHelper.getAddress());
+
+  const TranchingLogic = await ethers.getContractFactory("TranchingLogic");
+  const tranchingLogic = await TranchingLogic.deploy()
+  await tranchingLogic.waitForDeployment();
+  console.log("TranchingLogic deployed to ", await tranchingLogic.getAddress());
+
+  const TranchedPool = await ethers.getContractFactory("TranchedPool", {
+    libraries: {
+      TranchingLogic: tranchingLogic,
+    },
+  });
+  const tranchedPool = await upgrades.deployProxy(TranchedPool, [
+    goldfinchConfigAddress,
+    borrower.address,
+    15,
+    10,
+    10,
+    await schedule.getAddress(),
+    5,
+    10,
+    []
+  ], { unsafeAllowLinkedLibraries: true });
+  await tranchedPool.waitForDeployment();
+  console.log("TranchedPool deployed to ", await tranchedPool.getAddress());
+
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
