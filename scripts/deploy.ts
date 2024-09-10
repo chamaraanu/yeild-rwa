@@ -28,16 +28,37 @@ async function main() {
   await configHelper.waitForDeployment();
   console.log("ConfigHelper deployed to ", await configHelper.getAddress());
 
-  const TranchingLogic = await ethers.getContractFactory("TranchingLogic");
+  
+
+  // Deploy SafeERC20Transfer
+  const SafeERC20TransferFactory = await ethers.getContractFactory("SafeERC20Transfer");
+  const safeERC20Transfer = await SafeERC20TransferFactory.deploy();
+  await safeERC20Transfer.waitForDeployment();
+  console.log("SafeERC20Transfer deployed to:", await safeERC20Transfer.getAddress());
+
+  // Deploy SafeMathUpgradeable
+  const SafeMathUpgradeableFactory = await ethers.getContractFactory("SafeMathUpgradeable");
+  const safeMathUpgradeable = await SafeMathUpgradeableFactory.deploy();
+  await safeMathUpgradeable.waitForDeployment();
+  console.log("SafeMathUpgradeable deployed to:", await safeMathUpgradeable.getAddress());
+
+  const TranchingLogic = await ethers.getContractFactory("TranchingLogic"
+    // , { libraries: {
+    //   "contracts/protocol/core/ConfigHelper.sol:ConfigHelper": configHelper,
+    // },}
+  );
   const tranchingLogic = await TranchingLogic.deploy()
   await tranchingLogic.waitForDeployment();
   console.log("TranchingLogic deployed to ", await tranchingLogic.getAddress());
 
-  const TranchedPool = await ethers.getContractFactory("TranchedPool", {
-    libraries: {
-      TranchingLogic: tranchingLogic,
-    },
-  });
+  const TranchedPool = await ethers.getContractFactory("TranchedPool"
+    , { libraries: {
+      "contracts/protocol/core/TranchingLogic.sol:TranchingLogic": tranchingLogic,
+      // "contracts/protocol/core/ConfigHelper.sol:ConfigHelper": configHelper,
+      // SafeERC20Transfer: safeERC20Transfer,
+      // SafeMathUpgradeable: safeMathUpgradeable,
+    },}
+  );
   const tranchedPool = await upgrades.deployProxy(TranchedPool, [
     goldfinchConfigAddress,
     borrower.address,
